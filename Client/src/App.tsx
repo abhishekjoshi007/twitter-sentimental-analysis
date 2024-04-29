@@ -29,11 +29,14 @@ function App() {
   }, [])
 
   const renderEmotionAnalysis = (<div>
-    <Typography variant='h3' sx={{
-      fontWeight: "bold",
-      textTransform: "capitalize"
-    }}>{selection} Analysis</Typography>
     <Grid container padding={2} spacing={2}>
+      <Grid item xs={12} sm={12} md={12} lg={12}>
+        <Typography variant='h3' sx={{
+          fontWeight: "bold",
+          textTransform: "capitalize"
+        }}>{selection} Analysis</Typography>
+
+      </Grid>
       <Grid item xs={12} sm={12} md={12} lg={12}>
 
         <TextField
@@ -75,9 +78,10 @@ function App() {
   </div>)
   return (
     <>
-
       <Stack spacing={3} direction={'row'}>
-        {['sentiment', 'emotion']?.map((row, i) => <Button key={i}
+        {selection?.length ? <Button onClick={() => {
+          setSelection('')
+        }}>Back</Button> : ['sentiment', 'emotion']?.map((row, i) => <Button key={i}
           sx={{ textTransform: "capitalize" }}
           onClick={() => {
             setSelection(row)
