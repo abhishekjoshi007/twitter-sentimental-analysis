@@ -11,7 +11,7 @@ function App() {
     if (selection?.length) {
       const formData = new FormData()
       formData.append('text', response.text)
-      const data = await fetch(`http://localhost:5000/api/${selection}`, {
+      const data = await fetch(`http://localhost:8000/api/${selection}`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ text: response.text })

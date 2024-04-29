@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from emotion import predict_emotion
 from sentiment import predict_sentiment
@@ -7,10 +7,12 @@ app = Flask(__name__)
 # database = []
 
 
+CORS(app)
+
+
 @app.route('/api/emotion', methods=['POST'])
-@cross_origin(supports_credentials=True)
 def emotion_data():
-    data = request.json
+    data = request.get_json()
     # database.append(data)
     if ('text' in data and len(data['text'])):
         return jsonify({
@@ -28,9 +30,9 @@ def emotion_data():
 
 
 @app.route('/api/sentiment', methods=['POST'])
-@cross_origin(supports_credentials=True)
 def sentiment_data():
-    data = request.json
+
+    data = request.get_json()
     # database.append(data)
     if ('text' in data and len(data['text'])):
         return jsonify({
@@ -48,4 +50,4 @@ def sentiment_data():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8000, debug=True)
