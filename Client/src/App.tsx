@@ -1,6 +1,6 @@
-import { ChangeEvent, useCallback, useState } from 'react'
+import { CSSProperties, ChangeEvent, useCallback, useState } from 'react'
 import './App.css'
-import { Button, Grid, IconButton, Stack, TextField, Typography } from '@mui/material'
+import { Button, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
 import { Iconify } from './components/iconify';
 
 function App() {
@@ -28,73 +28,97 @@ function App() {
     setResponse((prev) => ({ ...prev, text: e.target.value }))
   }, [])
 
-  const renderEmotionAnalysis = (<div>
-    <Grid container padding={2} spacing={2}>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        <Typography variant='h3' sx={{
-          fontWeight: "bold",
-          textTransform: "capitalize"
-        }}>{selection} Analysis</Typography>
+  const renderEmotionAnalysis = (<div style={SX.Container}>
+    <Paper elevation={10} sx={{ borderRadius: 10 }}>
+      <Grid container padding={2} spacing={2}>
+        <Grid item xs={2} sm={2} md={2} lg={2}
 
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-
-        <TextField
-          label="Please add an input"
-          onChange={onHandleInput}
-          size='small'
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              onClickSubmit()
-            }
+          sx={{
+            display: "flex",
+            // textAlign: "center",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            verticalAlign: "middle",
           }}
-          fullWidth
-          value={response.text} />
-      </Grid>
-      <Grid item xs={11} sm={11} md={11} lg={11}>
-        <Button onClick={onClickSubmit} variant='contained'
-          disableElevation
-          fullWidth
-        >Submit</Button>
-      </Grid>
-
-      <Grid item xs={1} sm={1} md={1} lg={1}>
-        <IconButton onClick={onReset}>
-          <Iconify icon='carbon:reset' />
-        </IconButton>
-      </Grid>
-      <Grid item xs={12} sm={12} md={12} lg={12}>
-        {!!response?.output?.length && <Typography variant='h4'
-          textTransform='capitalize'
-          color='grey'
         >
-          Emotion: <em>{response.output}</em>
-        </Typography>}
+
+          <Button
+            variant='contained'
+            disableElevation
+            sx={{ textTransform: "none", borderRadius: 10 }}
+            startIcon={<Iconify icon='ic:round-arrow-back-ios' />}
+            onClick={() => {
+              setSelection('')
+            }}>Back</Button>
+
+        </Grid>
+
+        <Grid item xs={10} sm={10} md={10} lg={10}>
+          <Typography variant='h3' sx={SX.Header}>{selection} Analysis</Typography>
+
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+
+          <TextField
+            label="Please add an input"
+            onChange={onHandleInput}
+            size='small'
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                onClickSubmit()
+              }
+            }}
+            fullWidth
+            value={response.text} />
+        </Grid>
+        <Grid item xs={11} sm={11} md={11} lg={11}>
+          <Button onClick={onClickSubmit} variant='contained'
+            disableElevation
+            size='large'
+            sx={{ borderRadius: 10, textTransform: "none" }}
+            fullWidth
+          >Submit</Button>
+        </Grid>
+
+        <Grid item xs={1} sm={1} md={1} lg={1}>
+          <IconButton onClick={onReset}>
+            <Iconify icon='carbon:reset' />
+          </IconButton>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} lg={12}>
+          {!!response?.output?.length && <Typography variant='h4'
+            textTransform='capitalize'
+          >
+            Emotion: <em>{response.output}</em>
+          </Typography>}
+        </Grid>
+
       </Grid>
 
-    </Grid>
 
+    </Paper>
+  </div >)
 
+  if (selection?.length) {
+    return renderEmotionAnalysis;
+  }
+
+  return (<div style={SX.Container}>
+    <Stack spacing={3}>
+      {TAB_OPTIONS?.map((row, i) => <Button key={i}
+        disableElevation
+        sx={{ textTransform: "capitalize", fontSize: "2rem", borderRadius: 10 }}
+        onClick={() => {
+          setSelection(row)
+          onReset()
+        }}
+        variant='contained'
+      >{row}</Button>)
+      }
+    </Stack>
   </div>)
-  return (
-    <>
-      <Stack spacing={3} direction={'row'}>
-        {selection?.length ? <Button onClick={() => {
-          setSelection('')
-        }}>Back</Button> : ['sentiment', 'emotion']?.map((row, i) => <Button key={i}
-          sx={{ textTransform: "capitalize" }}
-          onClick={() => {
-            setSelection(row)
-            onReset()
-          }}
-          variant='contained'
-        >{row}</Button>)}
-      </Stack>
 
-      {!!selection?.length && (renderEmotionAnalysis)}
-
-
-    </>)
 }
 
 export default App
@@ -104,3 +128,19 @@ const headers = {
   ['Accept']: 'application/form-data',
   'Content-Type': 'application/json',
 }
+const SX: { [key: string]: CSSProperties } = {
+  Container: {
+    height: "100vh",
+    display: "flex",
+    // textAlign: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    verticalAlign: "middle",
+  },
+  Header: {
+    fontWeight: "bold",
+    textTransform: "capitalize"
+  }
+}
+const TAB_OPTIONS = ['sentiment', 'emotion']
